@@ -15,12 +15,6 @@ const leagueSpartan = League_Spartan({
   variable: "--font-league-spartan",
 });
 
-const RiaSans = localFont({
-  src: "./fonts/RiaSans-Extrabold.otf",
-  display: "swap",
-  variable: "--font-RiaSans",
-});
-
 const chab = localFont({
   src: [
     {
