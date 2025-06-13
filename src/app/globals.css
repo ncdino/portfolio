@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+html {
+  scrollbar-width: none;
+}
+
+/* IE and Edge (pre-Chromium) */
+body {
+  -ms-overflow-style: none;
+}
+
+.overflow-y-auto::-webkit-scrollbar {
+  width: 0;
+}
+
+body::-webkit-scrollbar {
+  width: 0;
+}
+
+@font-face {
+  font-family: "Paperlogy-8ExtraBold";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2")
+    format("woff2");
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "PFStardust";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/PFStardust.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.mouse-scroll {
+  /* position: absolute; */
+  top: 60%;
+  left: 50%;
+  position: sticky;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 65px;
+  border: 5px solid #5f2c82;
+  border-radius: 50px;
+}
+
+.mouse-scroll:before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 4px;
+  border-radius: 30%;
+  height: 10px;
+  background-color: #5f2c82;
+  animation: scrollDown 2s infinite;
+}
+
+@keyframes scrollDown {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0);
+  }
+
+  30% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 22px);
+  }
+}
