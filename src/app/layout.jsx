@@ -54,6 +54,10 @@ export default function RootLayout({ children }) {
           href="https://cdn.boxicons.com/fonts/basic/boxicons.min.css"
           rel="stylesheet"
         />
+        <link
+          href="https://cdn.boxicons.com/fonts/brands/boxicons-brands.min.css"
+          rel="stylesheet"
+        />
       </head>
       <body
         className={`${sequentialist.variable}  ${pretendard.variable} ${chab.variable} ${leagueSpartan.variable} antialiased bg-[url('https://ewqfysoxkdbxiitjyrgr.supabase.co/storage/v1/object/public/portfolio/Img/Gradient.png')]`}

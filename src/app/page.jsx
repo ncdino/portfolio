@@ -15,7 +15,7 @@ export default function Home() {
       <Profile />
       <Works id="works" />
       <TiltCard />
-      <MyProfile />
+      {/* <MyProfile /> */}
     </>
   );
 }
