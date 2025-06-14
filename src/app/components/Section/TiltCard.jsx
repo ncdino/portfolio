@@ -1,20 +1,22 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import CertCard from "../Card/CertCard";
 import Image from "next/image";
+import LogoMarquee from "../LogoMarquee";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Centralize data for easier management
 const certificatesData = [
   {
     id: "infoEngineer",
     topTitle: "국가기술자격증",
     mainTitle: "정보처리기사",
     logoWidth: "w-20 h-10 lg:w-20 lg:h-10",
-    ciImgSrc: `https://${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_REF}.supabase.co/storage/v1/object/public/portfolio/CertLogo/HRDK.png`,
+    ciImgSrc: `/CertLogo/HRDK.png`, // Use relative path, assuming your image component handles base path
     headerColor: "bg-blue-500",
     className:
       "absolute bg-white left-36 -top-10 opacity-0 shadow-2xl transition-all duration-1000 ease-in-out hover:scale-105 hover:shadow-3xl",
@@ -24,7 +26,7 @@ const certificatesData = [
     topTitle: "국가기술자격증",
     mainTitle: "컴퓨터활용능력 1급",
     logoWidth: "w-36 h-8 lg:w-36 lg:h-8",
-    ciImgSrc: `https://${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_REF}.supabase.co/storage/v1/object/public/portfolio/CertLogo/KCCI.png`,
+    ciImgSrc: `/CertLogo/KCCI.png`,
     headerColor: "bg-blue-500",
     className:
       "absolute bg-white right-60 -top-1 opacity-0 shadow-2xl transition-all duration-1000 ease-in-out hover:scale-105 hover:shadow-3xl",
@@ -34,7 +36,7 @@ const certificatesData = [
     topTitle: "공인민간자격증",
     mainTitle: "리눅스마스터 2급",
     logoWidth: "w-36 h-10 lg:w-36 lg:h-10",
-    ciImgSrc: `https://${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_REF}.supabase.co/storage/v1/object/public/portfolio/CertLogo/KAIT.png`,
+    ciImgSrc: `/CertLogo/KAIT.png`,
     headerColor: "bg-green-700",
     className:
       "absolute bg-white right-24 -bottom-10 opacity-0 shadow-2xl transition-all duration-1000 ease-in-out hover:scale-105 hover:shadow-3xl",
@@ -43,7 +45,7 @@ const certificatesData = [
     id: "az900",
     topTitle: "국제 자격증",
     mainTitle: "AZ-900",
-    ciImgSrc: `https://${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_REF}.supabase.co/storage/v1/object/public/portfolio/CertLogo/MS.png`,
+    ciImgSrc: `/CertLogo/MS.png`,
     headerColor: "bg-black",
     className:
       "absolute bg-white left-20 -bottom-10 opacity-0 shadow-2xl transition-all duration-1000 ease-in-out hover:scale-105 hover:shadow-3xl",
@@ -52,60 +54,50 @@ const certificatesData = [
     id: "ociAIFoundations",
     topTitle: "국제 자격증",
     mainTitle: "OCI 2024 Certified AI Foundations Associate",
-    ciImgSrc: `https://${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_REF}.supabase.co/storage/v1/object/public/portfolio/CertLogo/ORACLE.png`,
+    ciImgSrc: `/CertLogo/ORACLE.png`,
     headerColor: "bg-black",
     className:
       "absolute bg-white left-96 -bottom-24 opacity-0 shadow-2xl transition-all duration-1000 ease-in-out hover:scale-105 hover:shadow-3xl",
   },
 ];
 
+// Define animation easings as constants
+const HOVER_EASING = "cubic-bezier(0.23, 1, 0.32, 1)";
+const RETURN_EASING = "cubic-bezier(0.445, 0.05, 0.55, 0.95)";
+
 export default function TiltCard() {
-  const cardRef = useRef(null);
-  const containerRef = useRef(null);
-  const boxRefs = useRef([]);
-  const subContainerRef = useRef(null);
-  const profileTitleRef = useRef(null);
-  const cardInsideRef = useRef(null);
-  const cardInsideNewBgRef = useRef(null);
-  const profileContentRef = useRef(null);
-  const profileContainerRef = useRef(null);
-  const cardText1Ref = useRef(null);
-  const cardText2Ref = useRef(null);
-
-  const [isSwabswabHovered, setIsSwabswabHovered] = useState(false);
-
-  boxRefs.current = certificatesData.map(
-    (_, i) => boxRefs.current[i] ?? React.createRef()
-  );
+  // Use a single ref object for elements to avoid multiple useRef calls and improve organization
+  const refs = useRef({
+    card: null,
+    container: null,
+    subContainer: null,
+    profileTitle: null,
+    cardInside: null,
+    cardInsideNewBg: null,
+    profileContent: null,
+    profileContainer: null,
+    cardText1: null,
+    cardText2: null,
+    certCards: [], // Array to hold refs for CertCards
+  });
 
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [cardDims, setCardDims] = useState({ width: 0, height: 0 });
+  const [isSwabswabHovered, setIsSwabswabHovered] = useState(false);
 
-  const hoverEasing = "cubic-bezier(0.23, 1, 0.32, 1)";
-  const returnEasing = "cubic-bezier(0.445, 0.05, 0.55, 0.95)";
-
-  useEffect(() => {
-    const container = containerRef.current;
-    const card = cardRef.current;
-    const certCardsContainer = subContainerRef.current;
-    const profileTitle = profileTitleRef.current;
-    const originalCardBg = cardInsideRef.current;
-    const newCardBg = cardInsideNewBgRef.current;
-    const profileContent = profileContentRef.current;
-    const profileContainer = profileContainerRef.current;
-
-    if (
-      !card ||
-      !container ||
-      !certCardsContainer ||
-      !profileTitle ||
-      !profileContent ||
-      !originalCardBg ||
-      !newCardBg
-    ) {
-      return;
+  // Callback ref for CertCards
+  const setCertCardRef = useCallback((el, index) => {
+    if (el) {
+      refs.current.certCards[index] = el;
     }
+  }, []);
 
+  // Effect for mousemove and mouseleave on the card
+  useEffect(() => {
+    const card = refs.current.card;
+    if (!card) return;
+
+    // Initialize card dimensions
     setCardDims({ width: card.offsetWidth, height: card.offsetHeight });
 
     let mouseLeaveTimeout;
@@ -124,30 +116,62 @@ export default function TiltCard() {
       }, 1000);
     };
 
+    const handleMouseEnter = () => clearTimeout(mouseLeaveTimeout);
+
     card.addEventListener("mousemove", handleMouseMove);
     card.addEventListener("mouseleave", handleMouseLeave);
-    card.addEventListener("mouseenter", () => clearTimeout(mouseLeaveTimeout));
+    card.addEventListener("mouseenter", handleMouseEnter);
 
-    const cleanupEventListeners = () => {
+    return () => {
       card.removeEventListener("mousemove", handleMouseMove);
       card.removeEventListener("mouseleave", handleMouseLeave);
-      card.removeEventListener("mouseenter", () =>
-        clearTimeout(mouseLeaveTimeout)
-      );
+      card.removeEventListener("mouseenter", handleMouseEnter);
       clearTimeout(mouseLeaveTimeout);
     };
+  }, []); // Empty dependency array means this runs once on mount
+
+  // Effect for GSAP animations
+  useEffect(() => {
+    const {
+      card,
+      container,
+      subContainer,
+      profileTitle,
+      cardInside,
+      cardInsideNewBg,
+      profileContent,
+      cardText1,
+      cardText2,
+      certCards,
+    } = refs.current;
+
+    // Ensure all necessary refs are available before proceeding
+    if (
+      !card ||
+      !container ||
+      !subContainer ||
+      !profileTitle ||
+      !profileContent ||
+      !cardInside ||
+      !cardInsideNewBg ||
+      !cardText1 ||
+      !cardText2
+    ) {
+      return;
+    }
 
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: container,
         start: "center center",
-        end: "+=6000",
+        end: "+=6000", // Increased end value for longer scroll
         pin: true,
         pinSpacing: true,
         scrub: true,
       },
     });
 
+    // Animation for initial card appearance and text
     tl.fromTo(
       card,
       { autoAlpha: 0, y: 100, scale: 0.8, xPercent: -50, yPercent: -50 },
@@ -159,8 +183,9 @@ export default function TiltCard() {
         xPercent: -50,
         yPercent: -50,
       }
-    ).to(cardText1Ref.current, { opacity: 1 });
+    ).to(cardText1, { opacity: 1 });
 
+    // Animation for profile content fade out and new content fade in
     tl.fromTo(
       profileTitle,
       { autoAlpha: 0, y: -50 },
@@ -173,32 +198,26 @@ export default function TiltCard() {
         { autoAlpha: 1, y: 0 },
         ">"
       )
-      .fromTo(
-        profileTitle,
-        { filter: "blur(0px)", opacity: 1 },
+      .to(
+        [profileTitle, profileContent],
         { opacity: 0, filter: "blur(10px)", duration: 1 },
         ">"
       )
       .to(
-        profileContent,
-        { opacity: 0, filter: "blur(10px)", duration: 1 },
-        ">"
-      )
-      .to(
-        [originalCardBg, cardText1Ref.current, profileTitle, profileContent],
+        [cardInside, cardText1, profileTitle, profileContent],
         { opacity: 0, duration: 1, filter: "blur(10px)" },
         "-=0.5"
       )
       .fromTo(
-        [newCardBg, cardText2Ref.current],
+        [cardInsideNewBg, cardText2],
         { opacity: 0, autoAlpha: 0 },
         { opacity: 1, autoAlpha: 1, duration: 1 },
         "<"
       );
 
+    // Animate each certificate card
     certificatesData.forEach((cert, index) => {
-      const currentCertCard = boxRefs.current[index]?.current;
-
+      const currentCertCard = certCards[index];
       if (currentCertCard) {
         tl.fromTo(
           currentCertCard,
@@ -209,19 +228,21 @@ export default function TiltCard() {
       }
     });
 
+    // Fade out certificate cards container
     tl.fromTo(
-      certCardsContainer,
+      subContainer,
       { filter: "blur(0px)", opacity: 1 },
       { opacity: 0, filter: "blur(10px)", duration: 1 },
       ">"
     );
-    return () => {
-      cleanupEventListeners();
-      tl.kill();
-    };
-  }, []);
 
-  const getCardTransformStyle = () => {
+    return () => {
+      tl.kill(); // Clean up GSAP timeline on component unmount
+    };
+  }, []); // Empty dependency array ensures this runs once on mount
+
+  // Helper function to calculate card transform styles based on mouse position
+  const getCardTransformStyle = useCallback(() => {
     if (cardDims.width === 0 || cardDims.height === 0) return {};
 
     const mousePX = mousePosition.x / (cardDims.width / 2);
@@ -234,12 +255,13 @@ export default function TiltCard() {
       transform: `rotateY(${rX}deg) rotateX(${rY}deg)`,
       transition:
         mousePosition.x === 0 && mousePosition.y === 0
-          ? `all 1s ${returnEasing}`
-          : `all 0.6s ${hoverEasing}`,
+          ? `all 1s ${RETURN_EASING}`
+          : `all 0.6s ${HOVER_EASING}`,
     };
-  };
+  }, [cardDims, mousePosition]);
 
-  const getCardBgTransformStyle = () => {
+  // Helper function to calculate card background transform styles
+  const getCardBgTransformStyle = useCallback(() => {
     if (cardDims.width === 0 || cardDims.height === 0) return {};
 
     const mousePX = mousePosition.x / (cardDims.width / 2);
@@ -252,19 +274,24 @@ export default function TiltCard() {
       transform: `translateX(${tX}px) translateY(${tY}px)`,
       transition:
         mousePosition.x === 0 && mousePosition.y === 0
-          ? `all 1s ${returnEasing}`
-          : `all 0.6s ${hoverEasing}`,
+          ? `all 1s ${RETURN_EASING}`
+          : `all 0.6s ${HOVER_EASING}`,
     };
-  };
+  }, [cardDims, mousePosition]);
+
+  // Determine image base path based on environment variable
+  const imageBasePath = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_REF
+    ? `https://${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_REF}.supabase.co/storage/v1/object/public/portfolio`
+    : "";
 
   return (
     <div
-      ref={containerRef}
+      ref={(el) => (refs.current.container = el)}
       className="font-pretendard tracking-tighter flex flex-col justify-center items-center min-h-[150vh] p-10 relative"
     >
       <div
         className="card bg-gray-700 rounded-lg shadow-xl overflow-hidden absolute"
-        ref={cardRef}
+        ref={(el) => (refs.current.card = el)}
         style={{
           width: `380px`,
           height: `540px`,
@@ -278,14 +305,10 @@ export default function TiltCard() {
         }}
       >
         <div
-          ref={cardInsideRef}
+          ref={(el) => (refs.current.cardInside = el)}
           className="card-bg absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50"
           style={{
-            backgroundImage: `url(${
-              process.env.NEXT_PUBLIC_SUPABASE_PROJECT_REF
-                ? `https://ewqfysoxkdbxiitjyrgr.supabase.co/storage/v1/object/public/portfolio/CardImage/ProfileCard.png`
-                : undefined
-            })`,
+            backgroundImage: `url(${imageBasePath}/CardImage/ProfileCard.png)`,
             top: `-20px`,
             left: `-20px`,
             width: `calc(100% + 40px)`,
@@ -296,10 +319,10 @@ export default function TiltCard() {
           }}
         ></div>
         <div
-          ref={cardInsideNewBgRef}
+          ref={(el) => (refs.current.cardInsideNewBg = el)}
           className="card-bg-new absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50"
           style={{
-            backgroundImage: `url('https://${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_REF}.supabase.co/storage/v1/object/public/portfolio/CardImage/certcard.png')`,
+            backgroundImage: `url('${imageBasePath}/CardImage/certcard.png')`,
             top: `-20px`,
             left: `-20px`,
             width: `calc(100% + 40px)`,
@@ -318,24 +341,24 @@ export default function TiltCard() {
                 : "translateY(0%)",
             transition:
               mousePosition.x === 0 && mousePosition.y === 0
-                ? `0.6s ${returnEasing} 1.6s`
-                : `0.6s ${hoverEasing}`,
+                ? `0.6s ${RETURN_EASING} 1.6s`
+                : `0.6s ${HOVER_EASING}`,
           }}
         >
           <h1
-            ref={cardText1Ref}
+            ref={(el) => (refs.current.cardText1 = el)}
             className="text-3xl font-bold text-white relative z-10"
           >
-            <div className="font-pretendard font-light">
+            <div className="font-leagueSpartan font-light">
               <span className="text-6xl font-extrabold">A</span>
               <span className="text-6xl">BOUT ME</span>
             </div>
           </h1>
           <h1
-            ref={cardText2Ref}
+            ref={(el) => (refs.current.cardText2 = el)}
             className="text-3xl font-bold text-white mb-20 relative z-10 opacity-0"
           >
-            <div className="font-pretendard font-light">
+            <div className="font-leagueSpartan font-light">
               <span className="text-6xl font-extrabold">C</span>
               <span className="text-6xl">ERTIFICATE</span>
             </div>
@@ -347,8 +370,8 @@ export default function TiltCard() {
                 mousePosition.x === 0 && mousePosition.y === 0 ? "0" : "1",
               transition:
                 mousePosition.x === 0 && mousePosition.y === 0
-                  ? `0.6s ${returnEasing} 1.6s`
-                  : `0.6s ${hoverEasing}`,
+                  ? `0.6s ${RETURN_EASING} 1.6s`
+                  : `0.6s ${HOVER_EASING}`,
             }}
           >
             ❝Don't just stop at dreaming. Keep working until it becomes real.❞
@@ -366,15 +389,15 @@ export default function TiltCard() {
                   : "translateY(0%)",
               transition:
                 mousePosition.x === 0 && mousePosition.y === 0
-                  ? `5s ${returnEasing} 1s`
-                  : `5s ${hoverEasing}`,
+                  ? `5s ${RETURN_EASING} 1s`
+                  : `5s ${HOVER_EASING}`,
             }}
           ></div>
         </div>
       </div>
 
       <div
-        ref={subContainerRef}
+        ref={(el) => (refs.current.subContainer = el)}
         className="card-wrap relative flex flex-wrap justify-center items-center"
         style={{
           position: "absolute",
@@ -389,11 +412,11 @@ export default function TiltCard() {
         {certificatesData.map((cert, index) => (
           <CertCard
             key={cert.id}
-            ref={boxRefs.current[index]}
+            ref={(el) => setCertCardRef(el, index)}
             topTitle={cert.topTitle}
             mainTitle={cert.mainTitle}
-            profileImgSrc={`https://${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_REF}.supabase.co/storage/v1/object/public/portfolio/me/Profile.jpg`}
-            ciImgSrc={cert.ciImgSrc}
+            profileImgSrc={`${imageBasePath}/me/Profile.jpg`}
+            ciImgSrc={`${imageBasePath}${cert.ciImgSrc}`}
             logoWidth={cert.logoWidth}
             headerColor={cert.headerColor}
             className={cert.className}
@@ -404,9 +427,9 @@ export default function TiltCard() {
         ))}
       </div>
 
-      <div ref={profileContainerRef}>
+      <div ref={(el) => (refs.current.profileContainer = el)}>
         <div
-          ref={profileTitleRef}
+          ref={(el) => (refs.current.profileTitle = el)}
           className="absolute text-gray-600 grid grid-rows-4 gap-8"
           style={{
             opacity: 0,
@@ -437,11 +460,12 @@ export default function TiltCard() {
               </div>
             </div>
             <Image
-              src={`https://${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_REF}.supabase.co/storage/v1/object/public/portfolio/me/gradCut.png`}
+              src={`${imageBasePath}/me/gradCut.png`}
               alt="grad Image"
               width={200}
               height={200}
               className="absolute -bottom-4 -rotate-12 right-0 opacity-0 translate-y-full group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 ease-out"
+              unoptimized // Use unoptimized for external images or if you handle optimization yourself
             />
           </div>
 
@@ -490,7 +514,7 @@ export default function TiltCard() {
           </div>
         </div>
         <div
-          ref={profileContentRef}
+          ref={(el) => (refs.current.profileContent = el)}
           className="absolute text-gray-600 grid grid-rows-2 gap-8"
           style={{
             opacity: 0,
@@ -508,10 +532,13 @@ export default function TiltCard() {
             onMouseEnter={() => setIsSwabswabHovered(true)}
             onMouseLeave={() => setIsSwabswabHovered(false)}
           >
-            <div className="grid grid-cols-3 p-8 h-full">
-              <div className="col-span-1 font-leagueSpartan font-light">
+            <div className="grid grid-rows-3 p-8 h-full w-[512px] overflow-clip">
+              <div className="row-span-1 font-leagueSpartan font-light">
                 <span className="text-5xl font-extrabold">S</span>
                 <span className="text-5xl">kills</span>
+              </div>
+              <div className="row-span-2 w-[512px]">
+                <LogoMarquee />
               </div>
             </div>
           </div>
