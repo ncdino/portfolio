@@ -112,14 +112,14 @@ export default function Hero() {
   return (
     <div id="hero" ref={divTopRef} className="font-pretendard text-black">
       <div ref={heroRef} className="relative h-screen backdrop-blur-3xl">
-        <Image
+        {/* <Image
           ref={bubbleImgRef}
           src={heroImages[0].ImgUrl}
           alt={heroImages[0].alt}
           width={heroImages[0].width}
           height={heroImages[0].height}
           className="opacity-0 lg:absolute lg:left-96 lg:top-3 lg:block sm:hidden z-0"
-        />
+        /> */}
         {isLoading && <Loading onComplete={() => setIsLoading(false)} />}
         <h1 className="flex flex-col font-chab font-light tracking-tighter sm:text-5xl lg:text-9xl sm:px-6 md:px-7 lg:px-8 overflow-hidden">
           <span className="text-center">

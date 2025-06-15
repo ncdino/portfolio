@@ -9,14 +9,13 @@ import LogoMarquee from "../LogoMarquee";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Centralize data for easier management
 const certificatesData = [
   {
     id: "infoEngineer",
     topTitle: "국가기술자격증",
     mainTitle: "정보처리기사",
     logoWidth: "w-20 h-10 lg:w-20 lg:h-10",
-    ciImgSrc: `/CertLogo/HRDK.png`, // Use relative path, assuming your image component handles base path
+    ciImgSrc: `/CertLogo/HRDK.png`,
     headerColor: "bg-blue-500",
     className:
       "absolute bg-white left-36 -top-10 opacity-0 shadow-2xl transition-all duration-1000 ease-in-out hover:scale-105 hover:shadow-3xl",
@@ -61,12 +60,10 @@ const certificatesData = [
   },
 ];
 
-// Define animation easings as constants
 const HOVER_EASING = "cubic-bezier(0.23, 1, 0.32, 1)";
 const RETURN_EASING = "cubic-bezier(0.445, 0.05, 0.55, 0.95)";
 
 export default function TiltCard() {
-  // Use a single ref object for elements to avoid multiple useRef calls and improve organization
   const refs = useRef({
     card: null,
     container: null,
@@ -78,26 +75,23 @@ export default function TiltCard() {
     profileContainer: null,
     cardText1: null,
     cardText2: null,
-    certCards: [], // Array to hold refs for CertCards
+    certCards: [],
   });
 
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [cardDims, setCardDims] = useState({ width: 0, height: 0 });
   const [isSwabswabHovered, setIsSwabswabHovered] = useState(false);
 
-  // Callback ref for CertCards
   const setCertCardRef = useCallback((el, index) => {
     if (el) {
       refs.current.certCards[index] = el;
     }
   }, []);
 
-  // Effect for mousemove and mouseleave on the card
   useEffect(() => {
     const card = refs.current.card;
     if (!card) return;
 
-    // Initialize card dimensions
     setCardDims({ width: card.offsetWidth, height: card.offsetHeight });
 
     let mouseLeaveTimeout;
@@ -128,9 +122,8 @@ export default function TiltCard() {
       card.removeEventListener("mouseenter", handleMouseEnter);
       clearTimeout(mouseLeaveTimeout);
     };
-  }, []); // Empty dependency array means this runs once on mount
+  }, []);
 
-  // Effect for GSAP animations
   useEffect(() => {
     const {
       card,
@@ -145,7 +138,6 @@ export default function TiltCard() {
       certCards,
     } = refs.current;
 
-    // Ensure all necessary refs are available before proceeding
     if (
       !card ||
       !container ||
@@ -164,14 +156,13 @@ export default function TiltCard() {
       scrollTrigger: {
         trigger: container,
         start: "center center",
-        end: "+=6000", // Increased end value for longer scroll
+        end: "+=6000",
         pin: true,
         pinSpacing: true,
         scrub: true,
       },
     });
 
-    // Animation for initial card appearance and text
     tl.fromTo(
       card,
       { autoAlpha: 0, y: 100, scale: 0.8, xPercent: -50, yPercent: -50 },
@@ -185,7 +176,6 @@ export default function TiltCard() {
       }
     ).to(cardText1, { opacity: 1 });
 
-    // Animation for profile content fade out and new content fade in
     tl.fromTo(
       profileTitle,
       { autoAlpha: 0, y: -50 },
@@ -215,7 +205,6 @@ export default function TiltCard() {
         "<"
       );
 
-    // Animate each certificate card
     certificatesData.forEach((cert, index) => {
       const currentCertCard = certCards[index];
       if (currentCertCard) {
@@ -228,7 +217,6 @@ export default function TiltCard() {
       }
     });
 
-    // Fade out certificate cards container
     tl.fromTo(
       subContainer,
       { filter: "blur(0px)", opacity: 1 },
@@ -237,11 +225,10 @@ export default function TiltCard() {
     );
 
     return () => {
-      tl.kill(); // Clean up GSAP timeline on component unmount
+      tl.kill();
     };
-  }, []); // Empty dependency array ensures this runs once on mount
+  }, []);
 
-  // Helper function to calculate card transform styles based on mouse position
   const getCardTransformStyle = useCallback(() => {
     if (cardDims.width === 0 || cardDims.height === 0) return {};
 
@@ -260,7 +247,6 @@ export default function TiltCard() {
     };
   }, [cardDims, mousePosition]);
 
-  // Helper function to calculate card background transform styles
   const getCardBgTransformStyle = useCallback(() => {
     if (cardDims.width === 0 || cardDims.height === 0) return {};
 
@@ -279,7 +265,6 @@ export default function TiltCard() {
     };
   }, [cardDims, mousePosition]);
 
-  // Determine image base path based on environment variable
   const imageBasePath = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_REF
     ? `https://${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_REF}.supabase.co/storage/v1/object/public/portfolio`
     : "";
@@ -287,14 +272,12 @@ export default function TiltCard() {
   return (
     <div
       ref={(el) => (refs.current.container = el)}
-      className="font-pretendard tracking-tighter flex flex-col justify-center items-center min-h-[150vh] p-10 relative"
+      className="font-pretendard tracking-tighter flex flex-col justify-center items-center min-h-[150vh] lg:p-10 relative"
     >
       <div
-        className="card bg-gray-700 rounded-lg shadow-xl overflow-hidden absolute"
+        className="card bg-gray-700 rounded-lg shadow-xl overflow-hidden absolute w-[240px] h-[360px] lg:w-[380px] lg:h-[540px]"
         ref={(el) => (refs.current.card = el)}
         style={{
-          width: `380px`,
-          height: `540px`,
           top: `50%`,
           left: `50%`,
           transform: `translate(-50%, -50%) ${
@@ -350,8 +333,8 @@ export default function TiltCard() {
             className="text-3xl font-bold text-white relative z-10"
           >
             <div className="font-leagueSpartan font-light">
-              <span className="text-6xl font-extrabold">A</span>
-              <span className="text-6xl">BOUT ME</span>
+              <span className="text-3xl lg:text-6xl font-extrabold">A</span>
+              <span className="text-3xl lg:text-6xl">BOUT ME</span>
             </div>
           </h1>
           <h1
@@ -359,12 +342,12 @@ export default function TiltCard() {
             className="text-3xl font-bold text-white mb-20 relative z-10 opacity-0"
           >
             <div className="font-leagueSpartan font-light">
-              <span className="text-6xl font-extrabold">C</span>
-              <span className="text-6xl">ERTIFICATE</span>
+              <span className="text-3xl lg:text-6xl font-extrabold">C</span>
+              <span className="text-3xl lg:text-6xl">ERTIFICATE</span>
             </div>
           </h1>
           <p
-            className="font-leagueSpartan opacity-0 relative z-10 italic text-lg"
+            className="font-leagueSpartan opacity-0 relative z-10 italic text-sm md:text-base lg:text-lg"
             style={{
               opacity:
                 mousePosition.x === 0 && mousePosition.y === 0 ? "0" : "1",
@@ -398,14 +381,8 @@ export default function TiltCard() {
 
       <div
         ref={(el) => (refs.current.subContainer = el)}
-        className="card-wrap relative flex flex-wrap justify-center items-center"
+        className="card-wrap absolute flex flex-wrap justify-center items-center top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[600px]"
         style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: "100%",
-          height: "600px",
           transformStyle: `preserve-3d`,
         }}
       >
@@ -427,20 +404,14 @@ export default function TiltCard() {
         ))}
       </div>
 
+      {/* 4 cards */}
+
       <div ref={(el) => (refs.current.profileContainer = el)}>
         <div
           ref={(el) => (refs.current.profileTitle = el)}
-          className="absolute text-gray-600 grid grid-rows-4 gap-8"
-          style={{
-            opacity: 0,
-            top: "50%",
-            left: "10%",
-            transform: "translateY(-50%)",
-            zIndex: 30,
-            width: "300px",
-          }}
+          className="absolute text-gray-600 flex flex-col md:grid md:grid-rows-4 gap-4 md:gap-6 lg:gap-8 top-1/3 lg:top-1/2 opacity-0 left-0 lg:left-[10%] -translate-y-1/2 z-30 w-full lg:w-[300px]"
         >
-          <div className="relative row-span-2 transition duration-1000 text-white aspect-video bg-[#3C0B5F] rounded-4xl h-72 overflow-clip group">
+          <div className="relative row-span-2 transition duration-1000 text-white aspect-video bg-[#3C0B5F] rounded-4xl h-52 lg:h-72 overflow-clip group">
             <div className="h-full grid grid-rows-3 p-8">
               <div className="row-span-1 font-leagueSpartan font-extralight">
                 <span className="text-5xl font-bold">E</span>
@@ -465,12 +436,12 @@ export default function TiltCard() {
               width={200}
               height={200}
               className="absolute -bottom-4 -rotate-12 right-0 opacity-0 translate-y-full group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 ease-out"
-              unoptimized // Use unoptimized for external images or if you handle optimization yourself
+              unoptimized
             />
           </div>
 
           <div
-            className={`row-span-2 aspect-video bg-[#E5FFC3] rounded-4xl transition-all duration-500 ease-in-out h-72`}
+            className={`row-span-2 aspect-video bg-[#E5FFC3] rounded-4xl transition-all duration-500 ease-in-out h-52 lg:h-72`}
           >
             <div className="h-full grid grid-rows-3 p-8">
               <div className="row-span-1 font-leagueSpartan font-extralight">
@@ -515,19 +486,11 @@ export default function TiltCard() {
         </div>
         <div
           ref={(el) => (refs.current.profileContent = el)}
-          className="absolute text-gray-600 grid grid-rows-2 gap-8"
-          style={{
-            opacity: 0,
-            top: "50%",
-            right: "21%",
-            transform: "translateY(-50%)",
-            zIndex: 30,
-            width: "300px",
-          }}
+          className="absolute text-gray-600 grid grid-rows-2 gap-4 md:gap-6 lg:gap-8 top-2/3 lg:top-1/2 left-0 lg:left-[63%] -translate-y-1/2 z-30 w-[100px] lg:w-[300px] opacity-0"
         >
           <div
-            className={`row-span-1 bg-[#43B5C0] text-white rounded-4xl transition-all duration-500 ease-in-out w-[512px] ${
-              isSwabswabHovered ? "h-96" : "h-72"
+            className={`row-span-1 bg-[#43B5C0] text-white rounded-4xl transition-all duration-500 ease-in-out lg:w-[512px] ${
+              isSwabswabHovered ? "h-52 lg:h-96" : "h-52 lg:h-72"
             }`}
             onMouseEnter={() => setIsSwabswabHovered(true)}
             onMouseLeave={() => setIsSwabswabHovered(false)}
@@ -544,9 +507,7 @@ export default function TiltCard() {
           </div>
           <div
             id="swabswab"
-            className={`group row-span-1 bg-blue-200 rounded-4xl transition-all duration-500 ease-in-out cursor-pointer w-[512px] ${
-              isSwabswabHovered ? "h-72" : "h-72"
-            }`}
+            className={`group row-span-1 bg-blue-200 rounded-4xl transition-all duration-500 ease-in-out cursor-pointer w-full lg:w-[512px] h-52 lg:h-72`}
           >
             <a
               href="https://github.com/ncdino"

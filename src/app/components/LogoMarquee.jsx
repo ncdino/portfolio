@@ -31,7 +31,7 @@ const LogoMarquee = () => {
               className="mx-8 flex items-center justify-center group cursor-pointer"
             >
               <i
-                className={`${skill.icon} text-6xl text-white group-hover:scale-125 transition-transform duration-300`}
+                className={`${skill.icon} text-6xl text-white group-hover:scale-200 transition-transform duration-300`}
                 title={skill.name}
               ></i>
             </div>
@@ -42,7 +42,7 @@ const LogoMarquee = () => {
               className="mx-8 flex items-center justify-center group cursor-pointer"
             >
               <i
-                className={`${skill.icon} text-6xl text-white group-hover:scale-125 transition-transform duration-300`}
+                className={`${skill.icon} text-6xl text-white group-hover:scale-200 transition-transform duration-300`}
                 title={skill.name}
               ></i>
             </div>
@@ -56,7 +56,7 @@ const LogoMarquee = () => {
               className="mx-8 flex items-center justify-center group cursor-pointer"
             >
               <i
-                className={`${skill.icon} text-6xl ${skill.color} group-hover:scale-110 transition-transform duration-300`}
+                className={`${skill.icon} text-6xl ${skill.color} group-hover:scale-200 transition-transform duration-300`}
                 title={skill.name}
               ></i>
             </div>
@@ -67,7 +67,7 @@ const LogoMarquee = () => {
               className="mx-8 flex items-center justify-center group cursor-pointer"
             >
               <i
-                className={`${skill.icon} text-6xl ${skill.color} group-hover:scale-110 transition-transform duration-300`}
+                className={`${skill.icon} text-6xl ${skill.color} group-hover:scale-200 transition-transform duration-300`}
                 title={skill.name}
               ></i>
             </div>

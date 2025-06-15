@@ -12,53 +12,58 @@ gsap.registerPlugin(ScrollTrigger);
 export default function InsightDetail() {
   const containerRef = useRef(null);
 
-  // 제거된 leftFirstRef, leftSecondRef, leftFifthRef
-  const leftThirdRef = useRef(null); // Experience & Projects
-  const leftFourthRef = useRef(null); // Other Projects
+  const leftThirdRef = useRef(null);
+  const leftFourthRef = useRef(null);
 
-  // 제거된 rightFirstRef, rightSecondRef, rightFifthRef
-  const rightThirdRef = useRef(null); // Experience & Projects 내용
-  const rightFourthRef = useRef(null); // Other Projects 내용
-
-  const InsightDetailSecondRef = useRef(null); // 이 Ref는 현재 사용되지 않고 있습니다.
+  const rightThirdRef = useRef(null);
+  const rightFourthRef = useRef(null);
 
   const imageRef = useRef(null);
 
   useGSAP(() => {
     if (!containerRef.current) return;
 
-    let tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top top",
-        end: "200% bottom", // 남은 섹션 수에 맞춰 'end' 값 조정 (2개 섹션 전환이므로 200%)
-        scrub: true,
-        pin: true,
-      },
-    });
+    let mm = gsap.matchMedia();
 
-    // Experience & Projects 나타남 -> 사라짐
-    tl.fromTo(
-      [leftThirdRef.current, rightThirdRef.current],
-      { autoAlpha: 0, opacity: 0 },
-      { autoAlpha: 1, opacity: 1 }
-    ).to([leftThirdRef.current, rightThirdRef.current], {
-      opacity: 0,
-      display: "none",
-    });
+    mm.add("(min-width: 768px)", () => {
+      let tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "200% bottom",
+          scrub: true,
+          pin: true,
+        },
+      });
 
-    // Other Projects 나타남 (마지막 섹션)
-    tl.fromTo(
-      [leftFourthRef.current, rightFourthRef.current],
-      { autoAlpha: 0, opacity: 0 },
-      { autoAlpha: 1, opacity: 1 }
-    );
+      tl.fromTo(
+        [leftThirdRef.current, rightThirdRef.current],
+        { autoAlpha: 0, opacity: 0 },
+        { autoAlpha: 1, opacity: 1 }
+      ).to([leftThirdRef.current, rightThirdRef.current], {
+        opacity: 0,
+        display: "none",
+      });
+
+      tl.fromTo(
+        [leftFourthRef.current, rightFourthRef.current],
+        { autoAlpha: 0, opacity: 0 },
+        { autoAlpha: 1, opacity: 1 }
+      );
+
+      return () => {
+        tl.kill();
+      };
+    });
+    return () => {
+      mm.revert();
+    };
   }, [containerRef]);
 
   return (
     <section
       ref={containerRef}
-      className="h-[120dvh] p-20 font-pretendard font-extralight tracking-tighter bg-[#161616] text-[#FFF7E9]"
+      className="min-h-[150dvh] p-10 md:p-14 lg:p-20 font-pretendard font-extralight tracking-tighter bg-[#161616] text-[#FFF7E9]"
     >
       <div className="pt-10">
         <div className="grid grid-cols-6">
@@ -67,7 +72,7 @@ export default function InsightDetail() {
               {/* Introduce, Skill, Certification 제거됨 */}
 
               <div ref={leftThirdRef}>
-                <h1 className="text-3xl font-bold mb-3">
+                <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-3">
                   <span className="uppercase border-b-8">
                     Experience & Projects
                   </span>
@@ -75,18 +80,16 @@ export default function InsightDetail() {
               </div>
 
               <div ref={leftFourthRef}>
-                <h1 className="text-3xl font-bold mb-3">
+                <h1 className="text-lg md:text-xl lg:text-3xl font-bold mb-3 sm:hidden md:block">
                   <span className="uppercase border-b-8">Other Projects</span>
                 </h1>
               </div>
-
-              {/* Certification 제거됨 */}
             </div>
           </div>
 
           <div
             ref={imageRef}
-            className="col-span-2 max-h-[90vh] flex justify-center items-center"
+            className="col-span-2 max-h-[90vh] flex justify-center items-center sm:hidden md:block"
           >
             <div className="sticky top-20">
               <Image
@@ -99,14 +102,11 @@ export default function InsightDetail() {
             </div>
           </div>
 
-          <div className="col-span-3 ml-20">
-            {/* 학력, 경험/활동/교육 (Introduce 내용) 제거됨 */}
-            {/* Language, Frameworks 등 (Skill 내용) 제거됨 */}
-
-            <div ref={rightThirdRef}>
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-col gap-2">
-                  <h1 className="text-2xl font-bold">
+          <div className="col-span-5 md:col-span-3 ml-16 md:ml-18 lg:ml-20">
+            <div ref={rightThirdRef} className="">
+              <div className="flex flex-col sm:gap-7 md:gap-5 lg:gap-4">
+                <div className="flex flex-col sm:gap-1 md:gap-2">
+                  <h1 className="text-lg md:text-xl lg:text-2xl font-bold">
                     <span>고양이 사료 비교 사이트 &#34;비교하묘&#34;</span>
                   </h1>
                   <div>
@@ -125,8 +125,8 @@ export default function InsightDetail() {
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <h1 className="text-2xl font-bold">
+                <div className="flex flex-col sm:gap-1 md:gap-2">
+                  <h1 className="text-lg md:text-xl lg:text-2xl font-bold">
                     <span>
                       오프라인 마트 장바구니 관리 플랫폼 &#34;얼만교&#34;
                     </span>
@@ -143,8 +143,8 @@ export default function InsightDetail() {
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <h1 className="text-2xl font-bold">
+                <div className="flex flex-col sm:gap-1 md:gap-2">
+                  <h1 className="text-lg md:text-xl lg:text-2xl font-bold">
                     <span>잡지형 블로그 &#34;COCONUT.&#34;</span>
                   </h1>
                   <div>
@@ -166,8 +166,8 @@ export default function InsightDetail() {
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <h1 className="text-2xl font-bold">
+                <div className="flex flex-col sm:gap-1 md:gap-2">
+                  <h1 className="text-lg md:text-xl lg:text-2xl font-bold">
                     <span>불법주정차방지 사이트</span>
                   </h1>
                   <div>
@@ -190,8 +190,8 @@ export default function InsightDetail() {
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <h1 className="text-2xl font-bold">
+                <div className="flex flex-col sm:gap-1 md:gap-2">
+                  <h1 className="text-lg md:text-xl lg:text-2xl font-bold">
                     <span>
                       With Culture: 당신의 문화생활을 위한 Android App
                     </span>
@@ -217,9 +217,12 @@ export default function InsightDetail() {
               </div>
             </div>
 
-            <div ref={rightFourthRef} className="flex flex-col gap-4">
-              <div className="flex flex-col gap-2">
-                <h1 className="text-2xl font-bold">
+            <div
+              ref={rightFourthRef}
+              className="flex flex-col sm:gap-7 md:gap-5 lg:gap-4"
+            >
+              <div className="flex flex-col sm:gap-1 md:gap-2">
+                <h1 className="text-lg md:text-xl lg:text-2xl font-bold mt-6">
                   <span>
                     MicroController를 이용한 실시간 캐리어 물품 관리 모듈 제작
                   </span>
@@ -238,8 +241,8 @@ export default function InsightDetail() {
                   </p>
                 </div>
               </div>
-              <div className="flex flex-col gap-2">
-                <h1 className="text-2xl font-bold">
+              <div className="flex flex-col sm:gap-1 md:gap-2">
+                <h1 className="text-lg md:text-xl lg:text-2xl font-bold">
                   <span>
                     고령화 건강정보 빅데이터 구축 및 Web-App형 ‘고령화 케어
                     플랫폼’ 개발
@@ -260,8 +263,8 @@ export default function InsightDetail() {
                   </p>
                 </div>
               </div>
-              <div className="flex flex-col gap-2">
-                <h1 className="text-2xl font-bold">
+              <div className="flex flex-col sm:gap-1 md:gap-2">
+                <h1 className="text-lg md:text-xl lg:text-2xl font-bold">
                   <span>Point of Sales(POS) System 개발</span>
                 </h1>
                 <div>
@@ -273,8 +276,8 @@ export default function InsightDetail() {
                   </p>
                 </div>
               </div>
-              <div className="flex flex-col gap-2">
-                <h1 className="text-2xl font-bold">
+              <div className="flex flex-col sm:gap-1 md:gap-2">
+                <h1 className="text-lg md:text-xl lg:text-2xl font-bold">
                   <span>
                     산불 예측 모델 및 산불 로그 데이터를 통한 소방서 입지 선정
                     모델 개발
@@ -294,8 +297,8 @@ export default function InsightDetail() {
                   </p>
                 </div>
               </div>
-              <div className="flex flex-col gap-2">
-                <h1 className="text-2xl font-bold">
+              <div className="flex flex-col sm:gap-1 md:gap-2">
+                <h1 className="text-lg md:text-xl lg:text-2xl font-bold">
                   <span>
                     Tableau를 이용한 FSC, LCC별 항공사 데이터 통계 시각화
                   </span>
@@ -310,8 +313,8 @@ export default function InsightDetail() {
                   </p>
                 </div>
               </div>
-              <div className="flex flex-col gap-2">
-                <h1 className="text-2xl font-bold">
+              <div className="flex flex-col sm:gap-1 md:gap-2">
+                <h1 className="text-lg md:text-xl lg:text-2xl font-bold">
                   <span>
                     주요 프랜차이즈 카페 매장별 최적입지 분석, 시각화 및 위치별
                     평점 시각화
@@ -330,7 +333,6 @@ export default function InsightDetail() {
                 </div>
               </div>
             </div>
-            {/* Certificate 제거됨 */}
           </div>
         </div>
       </div>

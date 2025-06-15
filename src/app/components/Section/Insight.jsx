@@ -71,7 +71,7 @@ const Insight = () => {
 
       if (h1Ref.current) {
         gsap.to(h1Ref.current, {
-          fontSize: "2rem",
+          fontSize: "2.5rem",
           scrollTrigger: {
             trigger: insightRef.current,
             start: "top top",
@@ -97,7 +97,7 @@ const Insight = () => {
 
       if (headerSecondRef.current) {
         gsap.to(headerSecondRef.current, {
-          fontSize: "2rem",
+          fontSize: "2.5rem",
           opacity: 1,
           scrollTrigger: {
             trigger: insightRef.current,
@@ -267,17 +267,17 @@ const Insight = () => {
       <div className="min-h-screen flex flex-col gap-20 justify-center items-center transition-all duration-500">
         <span className="flex flex-col gap-2">
           <h1 ref={h1Ref} className="text-6xl md:text-10xl lg:text-12xl flex">
-            <span ref={headerFirstRef} className="mr-6">
+            <span ref={headerFirstRef} className="mr-2 lg:mr-6">
               LEE
             </span>
-            <span className="mr-6">JI</span>
-            <span ref={headerThirdRef} className="mr-6">
+            <span className="mr-2 lg:mr-6">JI</span>
+            <span ref={headerThirdRef} className="mr-2 lg:mr-6">
               HYEON
             </span>
           </h1>
           <span
             ref={headerSecondRef}
-            className="opacity-0 text-xs font-bold mt-5 md:mt-7 lg:mt-10"
+            className="opacity-0 text-xs font-bold mt-4 md:mt-7 lg:mt-10"
           >
             INSIGHT
           </span>
