@@ -1,6 +1,7 @@
 import localFont from "next/font/local";
 import "./globals.css";
 import { League_Spartan } from "next/font/google";
+import QueryClientPvd from "./lib/QueryClientPvd";
 
 const pretendard = localFont({
   src: "./fonts/PretendardVariable.woff2",
@@ -59,11 +60,13 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
       </head>
-      <body
-        className={`${sequentialist.variable}  ${pretendard.variable} ${chab.variable} ${leagueSpartan.variable} antialiased bg-[url('https://ewqfysoxkdbxiitjyrgr.supabase.co/storage/v1/object/public/portfolio/Img/Gradient.png')]`}
-      >
-        {children}
-      </body>
+      <QueryClientPvd>
+        <body
+          className={`${sequentialist.variable}  ${pretendard.variable} ${chab.variable} ${leagueSpartan.variable} antialiased bg-[url('https://ewqfysoxkdbxiitjyrgr.supabase.co/storage/v1/object/public/portfolio/Img/Gradient.png')]`}
+        >
+          {children}
+        </body>
+      </QueryClientPvd>
     </html>
   );
 }

@@ -8,10 +8,10 @@ import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { supabase } from "@/app/lib/supabaseClient";
 import { heroImages } from "../Data/WorksImage";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Hero() {
   const [isLoading, setIsLoading] = useState(true);
-  const [videoUrl, setVideoUrl] = useState(null);
   const h1Ref = useRef(null);
   const pRef = useRef(null);
   const boxRef = useRef(null);
@@ -20,28 +20,34 @@ export default function Hero() {
   const bubbleImgRef = useRef(null);
   const meImgRef = useRef(null);
 
-  useEffect(() => {
-    const fetchVideoUrl = async () => {
-      try {
-        const { data, error } = await supabase.storage
-          .from("portfolio")
-          .getPublicUrl("hero-row.mp4");
+  const {
+    data: videoUrl,
+    isLoading: isVideoUrlLoading,
+    error: videoUrlError,
+  } = useQuery({
+    queryKey: ["heroVideoUrl"],
+    queryFn: async () => {
+      const { data, error } = await supabase.storage
+        .from("portfolio")
+        .getPublicUrl("hero-row.mp4");
 
-        if (error) {
-          console.error("Error fetching video URL:", error);
-        } else {
-          setVideoUrl(data.publicUrl);
-        }
-      } catch (error) {
-        console.error("Unexpected error fetching video URL:", error);
+      if (error) {
+        throw new Error(`Error fetch video: ${error.message}`);
       }
-    };
+      return data.publicUrl;
+    },
+    staleTime: 1000 * 60 * 60,
+    cacheTime: 1000 * 60 * 60 * 24,
+  });
 
-    fetchVideoUrl();
-  }, []);
+  useEffect(() => {
+    if (!isVideoUrlLoading && !videoUrlError) {
+      setIsLoading(false);
+    }
+  }, [isVideoUrlLoading, videoUrlError]);
 
   useGSAP(() => {
-    gsap.registerPlugin(ScrollTrigger); // ScrollTrigger 등록
+    gsap.registerPlugin(ScrollTrigger);
 
     gsap.to(divTopRef.current, {
       backgroundColor: "#161616",
@@ -50,46 +56,46 @@ export default function Hero() {
         start: "top top",
         end: "bottom center",
         scrub: true,
-        // markers: true,
       },
     });
 
-    gsap.fromTo(
-      h1Ref.current,
-      { opacity: 0, y: 50 },
-      { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", delay: 3 }
-    );
+    if (!isLoading && videoUrl) {
+      gsap.fromTo(
+        h1Ref.current,
+        { opacity: 0, y: 50 },
+        { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", delay: 3 }
+      );
 
-    gsap.fromTo(
-      pRef.current,
-      { opacity: 0, y: 50 },
-      { opacity: 1, y: 0, duration: 0.3, ease: "bounce", delay: 3 }
-    );
+      gsap.fromTo(
+        pRef.current,
+        { opacity: 0, y: 50 },
+        { opacity: 1, y: 0, duration: 0.3, ease: "bounce", delay: 3 }
+      );
 
-    gsap.fromTo(
-      bubbleImgRef.current,
-      { opacity: 0, y: 50 },
-      { opacity: 1, y: 0, duration: 0.3, ease: "bounce", delay: 2 }
-    );
+      gsap.fromTo(
+        bubbleImgRef.current,
+        { opacity: 0, y: 50 },
+        { opacity: 1, y: 0, duration: 0.3, ease: "bounce", delay: 2 }
+      );
 
-    gsap.fromTo(
-      meImgRef.current,
-      { opacity: 0, y: 50 },
-      { opacity: 1, y: 0, duration: 0.3, ease: "bounce", delay: 2 }
-    );
-  }, []);
+      gsap.fromTo(
+        meImgRef.current,
+        { opacity: 0, y: 50 },
+        { opacity: 1, y: 0, duration: 0.3, ease: "bounce", delay: 2 }
+      );
+    }
+  }, [isLoading, videoUrl]);
 
   useGSAP(() => {
     let mm = gsap.matchMedia();
 
-    if (!isLoading) {
+    if (!isLoading && videoUrl) {
       mm.add("(min-width: 768px)", () => {
         let boxAnim = gsap.to(boxRef.current, {
           scrollTrigger: {
             trigger: heroRef.current,
             start: "top top",
             end: "bottom top",
-            // markers: true,
             scrub: 1,
           },
           width: "95vw",
@@ -99,7 +105,6 @@ export default function Hero() {
           xPercent: -35,
           yPercent: 100,
           ease: "none",
-          // pin: true,
         });
 
         return () => {
@@ -107,20 +112,25 @@ export default function Hero() {
         };
       });
     }
-  }, [isLoading]);
+  }, [isLoading, videoUrl]);
 
   return (
-    <div id="hero" ref={divTopRef} className="font-pretendard text-black">
+    <div
+      id="hero"
+      ref={divTopRef}
+      className="font-pretendard text-black min-h-[300vh]"
+    >
       <div ref={heroRef} className="relative h-screen backdrop-blur-3xl">
-        {/* <Image
-          ref={bubbleImgRef}
-          src={heroImages[0].ImgUrl}
-          alt={heroImages[0].alt}
-          width={heroImages[0].width}
-          height={heroImages[0].height}
-          className="opacity-0 lg:absolute lg:left-96 lg:top-3 lg:block sm:hidden z-0"
-        /> */}
-        {isLoading && <Loading onComplete={() => setIsLoading(false)} />}
+        {(isLoading || isVideoUrlLoading) && (
+          <Loading onComplete={() => setIsLoading(false)} />
+        )}
+
+        {videoUrlError && (
+          <div className="absolute inset-0 flex items-center justify-center text-red-500 z-50">
+            {videoUrlError.message}
+          </div>
+        )}
+
         <h1 className="flex flex-col font-chab font-light tracking-tighter sm:text-5xl lg:text-9xl sm:px-6 md:px-7 lg:px-8 overflow-hidden">
           <span className="text-center">
             <div className="flex flex-col gap-1">
@@ -137,8 +147,8 @@ export default function Hero() {
                 ref={pRef}
                 className="opacity-0 bg-gradient-to-r from-[#5053ff] to-[#071217] text-transparent bg-clip-text"
               >
-                P<span className="mr-[1.5em]">(</span>
-                <span className="ml-[1em]">&nbsp;)</span>
+                P<span className="mr-2 sm:mr-4 md:mr-6">(</span>
+                <span className="ml-2 sm:ml-4 md:ml-6">&nbsp;)</span>
                 <span>RTFOLIO</span>
               </span>
               <div className="md:grid md:grid-cols-2">
@@ -150,32 +160,30 @@ export default function Hero() {
                     alt={heroImages[1].alt}
                     width={heroImages[1].width}
                     height={heroImages[1].height}
-                    className="z-10 opacity-0"
+                    className="z-10 opacity-0 max-w-full h-auto"
                   />
                 </div>
               </div>
             </div>
           </span>{" "}
-          {/* <Image src='/leejh.png' alt='he' width={500} height={500} /> */}
-          {/* <span ref={pRef} className="opacity-0 text-end text-transparent bg-clip-text">JIHYEON</span> */}
         </h1>
         {!isLoading && videoUrl && (
           <video
             ref={boxRef}
-            className="absolute rounded-xl lg:-translate-x-1/2 lg:-translate-y-1/2 lg:top-[40%] lg:left-[37%] lg:rotate-12"
+            className="absolute rounded-xl 
+                       lg:-translate-x-1/2 lg:-translate-y-1/2 lg:top-[40%] lg:left-[37%] lg:rotate-12
+                       top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
+                       w-[90vw] h-auto max-w-full rotate-0"
             autoPlay
             loop
             muted
             playsInline
-            // preload="none"
-            // controls
           >
             <source src={videoUrl} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         )}
       </div>
-      <div className="h-[130dvh]"></div>
     </div>
   );
 }
