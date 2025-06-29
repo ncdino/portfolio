@@ -1,0 +1,107 @@
+@import url("https://fonts.googleapis.com/css2?family=Modak&display=swap");
+
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  @font-face {
+    font-family: "Modak";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: local("Modak"),
+      url("https://fonts.gstatic.com/s/modak/v12/E21-_dnvXhQk2LRModelsxHBMEXE.woff2")
+        format("woff2");
+  }
+  @font-face {
+    font-family: "Paperlogy-8ExtraBold";
+    src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2")
+      format("woff2");
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  body {
+    font-family: "Pretendard", sans-serif;
+    letter-spacing: -1px;
+    font-display: swap;
+  }
+}
+
+/* :root {
+  --my-background-image: url("/public/me.jpg");
+} */
+
+@layer utilities {
+  .font-modak {
+    @apply font-[Modak];
+  }
+
+  .font-PaperlogyExtraBold {
+    @apply font-[Paperlogy-8ExtraBold];
+  }
+  .font-KakaoBigSans-ExtraBold {
+    @apply font-[KakaoBigSans-ExtraBold];
+  }
+}
+
+@keyframes marquee-rtl {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-ltr {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+:root {
+  --marquee-duration: 40s;
+}
+
+/* sm  */
+@media (min-width: 640px) {
+  :root {
+    --marquee-duration: 30s;
+  }
+}
+
+/* md */
+@media (min-width: 768px) {
+  :root {
+    --marquee-duration: 25s;
+  }
+}
+
+/* lg */
+@media (min-width: 1024px) {
+  :root {
+    --marquee-duration: 20s;
+  }
+}
+
+@layer utilities {
+  .animate-marquee-rtl {
+    animation: marquee-rtl var(--marquee-duration) linear infinite;
+  }
+  .animate-marquee-rtl:hover {
+    animation-play-state: paused;
+  }
+
+  .animate-marquee-ltr {
+    animation: marquee-ltr var(--marquee-duration) linear infinite;
+  }
+  .animate-marquee-ltr:hover {
+    animation-play-state: paused;
+  }
+}
