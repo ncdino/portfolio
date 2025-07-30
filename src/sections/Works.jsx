@@ -85,6 +85,7 @@ export default function Works() {
               industry={project.industry}
               link={project.link}
               description={project.description}
+              titleTextSize={project.titleTextSize}
               ref={(el) => {
                 if (el) {
                   cardRefs.current[project.id] = el;

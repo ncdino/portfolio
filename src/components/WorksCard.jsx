@@ -12,6 +12,7 @@ const PortfolioCard = forwardRef(
       containerClassName = "",
       titleClassName = "",
       skillsContainerClassName = "",
+      titleTextSize = "text-4xl md:text-6xl lg:text-8xl",
     },
     ref
   ) => {
@@ -29,7 +30,7 @@ const PortfolioCard = forwardRef(
           className={`col-span-1 grid grid-rows-2 gap-72 md:gap-64 lg:gap-60 border-8 border-neutral-950 dark:border-neutral-100 p-6 md:p-8 lg:p-10 h-[350px] lg:h-[512px] rounded-3xl lg:rounded-4xl transition-all duration-200 relative overflow-hidden ${containerClassName}`}
         >
           <div
-            className={`row-span-1 font-[Paperlogy-8ExtraBold] text-4xl md:text-6xl lg:text-8xl tracking-normal text-neutral-950 group-hover:uppercase dark:text-neutral-100 relative z-10 ${titleClassName}`}
+            className={`row-span-1 font-[Paperlogy-8ExtraBold] ${titleTextSize} tracking-normal text-neutral-950 group-hover:uppercase dark:text-neutral-100 relative z-10 ${titleClassName} break-words whitespace-normal`}
           >
             {title}
           </div>

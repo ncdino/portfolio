@@ -341,4 +341,97 @@ export const WorksProjects = [
       },
     ],
   },
+  {
+    id: "leejihyeon-dev",
+    title: "leejihyeon.dev",
+    AppName: "leejihyeon.dev",
+    imageUrl:
+      "https://ewqfysoxkdbxiitjyrgr.supabase.co/storage/v1/object/public/portfolio/Screenshot/withCultureScreen.jpg",
+    skills: [
+      { icon: "bxl bx-spring-boot", name: "Spring Boot" },
+      { icon: "bxl bx-java", name: "Java" },
+      { icon: "bxl bx-postgresql", name: "PostgreSQL" },
+      { icon: "bxl bx-react", name: "Next.js" },
+      { icon: "bxl bx-typescript", name: "TypeScript" },
+      { icon: "bxl bx-tailwind-css", name: "Tailwind CSS" },
+      { icon: "bxl bx-aws", name: "AWS S3" },
+      { icon: "bxl bx-git", name: "Git" },
+    ],
+    link: "https://leejihyeon.dev",
+    titleTextSize: "text-3xl md:text-4xl lg:text-6xl",
+    industry: "BLOG",
+    description:
+      "Spring Boot와 Next.js를 기반으로, 기획부터 개발, 배포까지 전 과정을 직접 구현한 Full-Stack 기술 블로그입니다. 개인 서버에 백엔드를 직접 구축하고, Vercel을 통해 프론트엔드를 배포하는 하이브리드 구조를 적용했습니다.",
+    subVideo:
+      "https://ewqfysoxkdbxiitjyrgr.supabase.co/storage/v1/object/public/portfolio/leejihyeon-dev-Sub/leejihyeon-dev-1.webm",
+    detailSections: [
+      {
+        id: "leejihyeon-dev-blog-1",
+        media: {
+          type: "video",
+          src: "https://ewqfysoxkdbxiitjyrgr.supabase.co/storage/v1/object/public/portfolio/leejihyeon-dev-Sub/leejihyeon-dev-1.webm",
+          alt: "WithCulture 앱 좋아요 및 알림 기능",
+        },
+        content: {
+          title: "기획부터 배포까지, 나만의 공간 만들기",
+          subtitle: "Project Overview",
+          description:
+            "단순히 블로그를 만드는 것을 넘어, 백엔드와 프론트엔드의 전체 흐름을 이해하고 직접 제어하는 것을 목표로 했습니다. JWT 쿠키 인증, AWS S3 파일 업로드, Nginx를 이용한 HTTPS 적용 등 실제 서비스에 필요한 핵심 기술들을 학습하고 구현했습니다.",
+          stats: [
+            { label: "개발 환경", value: "Full-Stack Web" },
+            { label: "개발 기간", value: "약 2.5주" },
+            { label: "팀 규모", value: "1명 (개인 프로젝트)" },
+          ],
+          tags: [
+            "Next.js",
+            "Tailwind CSS",
+            "TypeScript",
+            "Zustand",
+            "TanStack Query",
+            "PWA",
+          ],
+        },
+      },
+      {
+        id: "leejihyeon-dev-blog-2",
+        media: {
+          type: "video",
+          src: "https://ewqfysoxkdbxiitjyrgr.supabase.co/storage/v1/object/public/portfolio/leejihyeon-dev-Sub/leejihyeon-dev-1.webm",
+          alt: "WithCulture 앱 좋아요 및 알림 기능",
+        },
+        content: {
+          title: "안정성을 고려한 백엔드 아키텍처",
+          subtitle: "Backend Architecture",
+          description:
+            "Spring Boot의 3계층 아키텍처를 기반으로 역할을 명확히 분리했습니다. Spring Security와 JWT(HttpOnly Cookie)를 통해 인증/인가를 구현했으며, PostgreSQL 데이터베이스에 게시글, 카테고리, 이미지 정보를 관계형으로 설계하여 저장합니다.",
+          features: [
+            "Spring Boot 3계층 아키텍처 (Controller-Service-Repository)",
+            "JWT 쿠키 기반의 상태 비저장(Stateless) 인증",
+            "PostgreSQL, JPA(다대다 관계 포함) 모델링",
+            "Nginx, Certbot을 이용한 개인 서버 HTTPS 배포",
+          ],
+        },
+      },
+      {
+        id: "leejihyeon-dev-blog-3",
+        media: {
+          type: "video",
+          src: "https://ewqfysoxkdbxiitjyrgr.supabase.co/storage/v1/object/public/portfolio/leejihyeon-dev-Sub/leejihyeon-dev-1.webm",
+          alt: "WithCulture 앱 좋아요 및 알림 기능",
+        },
+        content: {
+          title: "코어 웹 바이탈을 고려한 SEO 최적화 프론트엔드",
+          subtitle: "Frontend Architecture",
+          description:
+            "Next.js의 App Router를 사용하여 SEO와 성능을 최적화했습니다. TanStack Query(React Query)로 서버 상태를 관리하고, Zustand로 클라이언트 상태를 분리하여 효율적인 데이터 흐름을 만들었습니다. Tailwind CSS를 이용해 반응형 UI를 구축했습니다.",
+          features: [
+            "Next.js App Router (SSR, 서버 컴포넌트 활용)",
+            "TanStack Query를 이용한 비동기 데이터 관리",
+            "Zustand를 이용한 전역 상태 관리 (UI 테마, 검색 등)",
+            "PWA 적용 및 모바일 반응형 디자인",
+          ],
+        },
+      },
+    ],
+  },
 ];
